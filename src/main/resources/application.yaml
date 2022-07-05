@@ -1,13 +1,42 @@
+app:
+  validation:
+    enabled: true
+    package: classpath:fhir/cambio-1_0.tgz
+  openapi: false
+
 server:
   port: 8080
+
 hapi:
   fhir:
     version: r4
     server:
       url: http://localhost:8080/fhir
+      path: /fhir/*
+    rest:
+      server-name: hapi-fhir-demo
+      server-version: 1.0.0
+      implementation-description: Chorus demo server
+      default-response-encoding: json
+      e-tag-support: enabled
+      default-pretty-print: true
+
 management:
   security:
     enabled: false
+
 logging:
   level:
     ca.uhn.fhir.jaxrs: debug
+
+spring:
+  data:
+    mongodb:
+      database: fhir_demo
+      host: localhost
+      username: chorus
+      password: chorus123
+      port: 37017
+      auto-index-creation: true
+      repositories:
+        type: auto
