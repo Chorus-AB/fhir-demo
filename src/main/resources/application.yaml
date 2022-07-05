@@ -1,8 +1,9 @@
 app:
   validation:
     enabled: true
-    package: classpath:fhir/cambio-1_0.tgz
-  openapi: false
+    package:
+      - classpath:fhir/cambio-1_0.tgz
+  openapi: true
 
 server:
   port: 8080

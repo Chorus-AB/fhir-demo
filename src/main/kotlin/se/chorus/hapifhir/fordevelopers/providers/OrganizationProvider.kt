@@ -1,6 +1,7 @@
 package se.chorus.hapifhir.fordevelopers.providers
 
 import ca.uhn.fhir.context.FhirContext
+import ca.uhn.fhir.model.api.annotation.ResourceDef
 import ca.uhn.fhir.rest.annotation.Create
 import ca.uhn.fhir.rest.annotation.IdParam
 import ca.uhn.fhir.rest.annotation.Read
@@ -117,6 +118,7 @@ class OrganizationProvider(
         if (organization.id == null) {
             organization.setId(UUID.randomUUID().toString())
         }
+
         Document.parse(fhirContext.newJsonParser().encodeResourceToString(organization)).let {
             mongoTemplate.insert(it, organization.fhirType())
         }
@@ -126,3 +128,6 @@ class OrganizationProvider(
 
     override fun getResourceType() = Organization::class.java
 }
+
+@ResourceDef(name = "CambioOrganization", profile = "https://cambio.se/StructureDefinition/OrganizationSEVendorLite")
+class CambioOrganization: Organization()

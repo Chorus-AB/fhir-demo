@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class FhirServerConfig(
     val fhirContext: FhirContext,
-    @Value("\${app.validation.package}") val profilePath: String?
+    @Value("\${app.validation.package}") val profilePath: List<String>?
 ) {
     /*
         For more details on the open api support, see
@@ -44,12 +44,15 @@ class FhirServerConfig(
     @Bean
     @ConditionalOnProperty(prefix = "app.validation", value = ["enabled"], havingValue = "true")
     fun validation() = FhirRestfulServerCustomizer { server ->
-        val npmPackageSupport = NpmPackageValidationSupport(fhirContext).apply {
-            loadPackageFromClasspath(profilePath)
-        }
+
+        val npmPackageSupport = profilePath?.map {
+            NpmPackageValidationSupport(fhirContext).apply {
+                loadPackageFromClasspath(it)
+            }
+        }?: listOf()
 
         val requestInterceptor = ValidationSupportChain(
-            npmPackageSupport,
+            *npmPackageSupport.toTypedArray(),
             DefaultProfileValidationSupport(fhirContext),
             CommonCodeSystemsTerminologyService(fhirContext),
             InMemoryTerminologyServerValidationSupport(fhirContext)
